@@ -43,7 +43,10 @@ from dpeaDPi.DPiStepper import *
    Tall Tower Limit Sensor goes in IN 2
    Short Tower Limit Sensor goes in IN 1
    """
-
+dpiStepper = DPiStepper()
+dpiStepper.setBoardNumber(0)
+dpiComputer = DPiComputer()
+dpiComputer.initialize()
 # ////////////////////////////////////////////////////////////////
 # //                      GLOBAL VARIABLES                      //
 # //                         CONSTANTS                          //
@@ -92,7 +95,7 @@ sm = ScreenManager()
 
 class MainScreen(Screen):
     armPosition = 0
-    lastClick = time.clock()
+    lastClick = time.time()
 
     def __init__(self, **kwargs):
         super(MainScreen, self).__init__(**kwargs)
@@ -111,6 +114,24 @@ class MainScreen(Screen):
 
     def toggleMagnet(self):
         print("Process magnet here")
+        toggle = self.ids.magnetControl
+        toggle.text = "Magnet on" if toggle.text == "Magnet off" else "Magnet on"
+        if (self.ids.magnetControl == "Magnet on"):
+            print("Magnet On")
+            self.magnetOn()
+        if (self.ids.magnetControl == "Magnet off"):
+            print("Magnet Off")
+            self.magnetOff()
+
+
+
+    def magnetOn(self):
+        servoNumber = 1
+        dpiComputer.writeServo(servoNumber, 180)
+
+    def magnetOff(self):
+        servoNumber = 1
+        dpiComputer.writeServo(servoNumber, 0)
 
     def auto(self):
         print("Run the arm automatically here")
@@ -118,14 +139,26 @@ class MainScreen(Screen):
     def setArmPosition(self, position):
         print("Move arm here")
 
-    def homeArm(self):
-        arm.home(self.homeDirection)
+    #def homeArm(self):
+        #arm.home(self.homeDirection)
 
     def isBallOnTallTower(self):
-        print("Determine if ball is on the top tower")
+        value = dpiComputer.readDigitalIn(dpiComputer.IN_CONNECTOR__IN_2)
+        if(value == 0):
+            print("Ball is on tall tower")
+        else:
+            print("Ball is not on tall tower")
+        return(value)
+
 
     def isBallOnShortTower(self):
         print("Determine if ball is on the bottom tower")
+        value = dpiComputer.readDigitalIn(dpiComputer.IN_CONNECTOR__IN_1)
+        if (value == 0):
+            print("Ball is on short tower")
+        else:
+            print("Ball is not on short tower")
+        return (value)
 
     def initialize(self):
         print("Home arm and turn off magnet")

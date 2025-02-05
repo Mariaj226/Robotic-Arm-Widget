@@ -48,13 +48,26 @@
         DPEAButton:
             id: magnetControl
             color: 0.180, 0.188, 0.980, 1
-            text: "Hold Ball"
+            text: "Magnet Off"
             center_x: root.width * 0.65
             y: root.height * 0.35
             background_color: 0, 0, 0, 0
             background_normal: ''
             size_hint: None,None
             size: 300,100
+            on_press: root.toggleMagnet()
+            on_release: root.resetColors()
+
+        DPEAButton:
+            id: test
+            color: 0.180, 0.188, 0.980, 1
+            text: "test"
+            center_x: root.width * 0.65
+            y: root.height * 0.6
+            background_color: 0, 0, 0, 0
+            background_normal: ''
+            size_hint: None,None
+            size: 200,75
             on_press: root.toggleMagnet()
             on_release: root.resetColors()
 
