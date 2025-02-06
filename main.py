@@ -111,19 +111,33 @@ class MainScreen(Screen):
 
     def toggleArm(self):
         print("Process arm movement here")
+        armSpeed = 1000
+        self.lowerArm()
+        sleep(2)
+        self.raiseArm()
+
+
+    def lowerArm(self):
+        servoNumber = 0
+        dpiComputer.writeServo(servoNumber, 0)
+
+    def raiseArm(self):
+        servoNumber = 0
+        dpiComputer.writeServo(servoNumber, 90)
 
     def toggleMagnet(self):
-        print("Process magnet here")
         toggle = self.ids.magnetControl
-        toggle.text = "Magnet on" if toggle.text == "Magnet off" else "Magnet on"
-        if (self.ids.magnetControl == "Magnet on"):
+        if (toggle.text == "Magnet off"):
+            toggle.text = "Magnet on"
+        else:
+            toggle.text = "Magnet off"
+
+        if (toggle.text == "Magnet off"):
             print("Magnet On")
-            self.magnetOn()
-        if (self.ids.magnetControl == "Magnet off"):
-            print("Magnet Off")
             self.magnetOff()
-
-
+        else:
+            print("Magnet Off")
+            self.magnetOn()
 
     def magnetOn(self):
         servoNumber = 1
@@ -138,6 +152,9 @@ class MainScreen(Screen):
 
     def setArmPosition(self, position):
         print("Move arm here")
+        dpiStepper.enableMotors(True)
+        dpiStepper.setSpeedInStepsPerSecond(0, armSpeed)
+        dpiStepper.moveToRelativePositionInSteps(0, 300, True)
 
     #def homeArm(self):
         #arm.home(self.homeDirection)
